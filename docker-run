@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+set -x
+
+XSOCK=/tmp/.X11-unix
+XAUTH=/tmp/.docker.xauth
+
+xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
+chmod 0755 $XAUTH
+
+docker run --rm -it -v $XSOCK:$XSOCK -v $XAUTH:$XAUTH -v $OUTDIR:/mnt/outdir -e XAUTHORITY=$XAUTH nifskope:$VERSION
